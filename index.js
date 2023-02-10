@@ -40,6 +40,8 @@ const player = new Fighter({
     x: 0,
     y: 0,
   },
+  imageSrc: './img/samuraiMack/Idle.png',
+  framesMax: 8,
 });
 
 const enemy = new Fighter({
