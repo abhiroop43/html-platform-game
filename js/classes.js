@@ -1,5 +1,5 @@
-const ANIMATION_SLOWDOWN = 10;  // slow down the animation by this multiplier
-const FIGHTER_GROUND_POSITION_Y = 330;  // offset the fighter's position from the bottom of the canvas
+const ANIMATION_SLOWDOWN = 10; // slow down the animation by this multiplier
+const FIGHTER_GROUND_POSITION_Y = 330; // offset the fighter's position from the bottom of the canvas
 
 class Sprite {
   constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
@@ -90,6 +90,7 @@ class Fighter extends Sprite {
     this.framesElapsed = 0;
     this.framesHold = ANIMATION_SLOWDOWN;
     this.sprites = sprites;
+    this.dead = false;
 
     for (const sprite in this.sprites) {
       this.sprites[sprite].image = new Image();
@@ -99,7 +100,11 @@ class Fighter extends Sprite {
 
   update() {
     this.draw();
-    this.animateFrames();
+
+    // unless the fighter is dead, animate the frames
+    if (!this.dead) {
+      this.animateFrames();
+    }
 
     this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
@@ -128,11 +133,27 @@ class Fighter extends Sprite {
   }
 
   takeHit() {
-    this.switchSprite('takeHit');
     this.health -= DAMAGE;
+
+    if (this.health <= 0) {
+      this.health = 0;
+      this.switchSprite('death');
+    } else {
+      this.switchSprite('takeHit');
+    }
   }
 
   switchSprite(sprite) {
+    // if player is dead, don't switch sprites
+    if (this.image === this.sprites.death.image) {
+      // set dead flag to true when the death animation is finished
+      if (this.framesCurrent === this.sprites.death.framesMax - 1) {
+        this.dead = true;
+      }
+
+      return;
+    }
+
     // overriding all other animations with the attack animation
     if (this.image === this.sprites.attack1.image && this.framesCurrent < this.sprites.attack1.framesMax - 1) return;
 
@@ -186,6 +207,13 @@ class Fighter extends Sprite {
         if (this.image !== this.sprites.takeHit.image) {
           this.image = this.sprites.takeHit.image;
           this.framesMax = this.sprites.takeHit.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+      case 'death':
+        if (this.image !== this.sprites.death.image) {
+          this.image = this.sprites.death.image;
+          this.framesMax = this.sprites.death.framesMax;
           this.framesCurrent = 0;
         }
         break;
