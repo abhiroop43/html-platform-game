@@ -7,7 +7,8 @@ canvas.height = 576;
 // canvasContext.fillStyle = 'white';
 c.fillRect(0, 0, canvas.width, canvas.height);
 
-const gravity = 0.7;
+const GRAVITY = 0.7;
+const DAMAGE = 20;
 
 const background = new Sprite({
   position: {
@@ -73,6 +74,14 @@ const player = new Fighter({
       framesMax: 6,
     },
   },
+  attackBox: {
+    offset: {
+      x: 100,
+      y: 50,
+    },
+    width: 158,
+    height: 50,
+  },
 });
 
 const enemy = new Fighter({
@@ -122,6 +131,14 @@ const enemy = new Fighter({
       framesMax: 6,
     },
   },
+  attackBox: {
+    offset: {
+      x: -170,
+      y: 50,
+    },
+    width: 170,
+    height: 50,
+  },
 });
 
 const movementSpeed = 5;
@@ -150,6 +167,10 @@ const keys = {
 decreaseTimer();
 
 function animate() {
+  if (timer === 0) {
+    return;
+  }
+
   window.requestAnimationFrame(animate);
 
   c.fillStyle = 'black';
@@ -202,16 +223,26 @@ function animate() {
     enemy.switchSprite('fall');
   }
 
-  // detect for collision //
-  if (rectangularCollision({ rectangle1: player, rectangle2: enemy }) && player.isAttacking) {
+  // detect for collision - Player 1 //
+  if (
+    rectangularCollision({ rectangle1: player, rectangle2: enemy }) &&
+    player.isAttacking &&
+    player.framesCurrent === 4
+  ) {
     player.isAttacking = false;
-    enemy.health -= 20;
+    enemy.health -= DAMAGE;
     document.querySelector('#enemyHealth').style.width = enemy.health + '%';
   }
 
+  // if Player 1 misses //
+  if (player.isAttacking && player.framesCurrent === 4) {
+    player.isAttacking = false;
+  }
+
+  // detect for collision - Player 2 //
   if (rectangularCollision({ rectangle1: enemy, rectangle2: player }) && enemy.isAttacking) {
     enemy.isAttacking = false;
-    player.health -= 20;
+    player.health -= DAMAGE;
     document.querySelector('#playerHealth').style.width = player.health + '%';
   }
 
