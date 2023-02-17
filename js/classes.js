@@ -115,7 +115,8 @@ class Fighter extends Sprite {
     this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
-    c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+    // draw the attackbox
+    // c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
@@ -135,6 +136,10 @@ class Fighter extends Sprite {
     // setTimeout(() => {
     //   this.isAttacking = false;
     // }, 100);
+  }
+
+  takeHit() {
+    enemy.health -= DAMAGE;
   }
 
   switchSprite(sprite) {
@@ -179,6 +184,13 @@ class Fighter extends Sprite {
         if (this.image !== this.sprites.attack2.image) {
           this.image = this.sprites.attack2.image;
           this.framesMax = this.sprites.attack2.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+      case 'takeHit':
+        if (this.image !== this.sprites.takeHit.image) {
+          this.image = this.sprites.takeHit.image;
+          this.framesMax = this.sprites.takeHit.framesMax;
           this.framesCurrent = 0;
         }
         break;

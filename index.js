@@ -130,6 +130,10 @@ const enemy = new Fighter({
       imageSrc: './img/kenji/Attack2.png',
       framesMax: 6,
     },
+    takeHit: {
+      imageSrc: './img/kenji/Take hit.png',
+      framesMax: 3,
+    },
   },
   attackBox: {
     offset: {
@@ -223,14 +227,14 @@ function animate() {
     enemy.switchSprite('fall');
   }
 
-  // detect for collision - Player 1 //
+  // detect for collision and enemy hit - Player 1 //
   if (
     rectangularCollision({ rectangle1: player, rectangle2: enemy }) &&
     player.isAttacking &&
     player.framesCurrent === 4
   ) {
+    emeny.takeHit();
     player.isAttacking = false;
-    enemy.health -= DAMAGE;
     document.querySelector('#enemyHealth').style.width = enemy.health + '%';
   }
 
@@ -240,10 +244,19 @@ function animate() {
   }
 
   // detect for collision - Player 2 //
-  if (rectangularCollision({ rectangle1: enemy, rectangle2: player }) && enemy.isAttacking) {
+  if (
+    rectangularCollision({ rectangle1: enemy, rectangle2: player }) &&
+    enemy.isAttacking &&
+    enemy.framesCurrent === 2
+  ) {
     enemy.isAttacking = false;
     player.health -= DAMAGE;
     document.querySelector('#playerHealth').style.width = player.health + '%';
+  }
+
+  // if Player 2 misses //
+  if (enemy.isAttacking && enemy.framesCurrent === 2) {
+    enemy.isAttacking = false;
   }
 
   // end the game based on health //
