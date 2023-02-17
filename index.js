@@ -73,6 +73,10 @@ const player = new Fighter({
       imageSrc: './img/samuraiMack/Attack2.png',
       framesMax: 6,
     },
+    takeHit: {
+      imageSrc: './img/samuraiMack/Take Hit - white silhouette.png',
+      framesMax: 4,
+    },
   },
   attackBox: {
     offset: {
@@ -233,7 +237,7 @@ function animate() {
     player.isAttacking &&
     player.framesCurrent === 4
   ) {
-    emeny.takeHit();
+    enemy.takeHit();
     player.isAttacking = false;
     document.querySelector('#enemyHealth').style.width = enemy.health + '%';
   }
@@ -243,14 +247,14 @@ function animate() {
     player.isAttacking = false;
   }
 
-  // detect for collision - Player 2 //
+  // detect for collision and enemy hit - Player 2 //
   if (
     rectangularCollision({ rectangle1: enemy, rectangle2: player }) &&
     enemy.isAttacking &&
     enemy.framesCurrent === 2
   ) {
+    player.takeHit();
     enemy.isAttacking = false;
-    player.health -= DAMAGE;
     document.querySelector('#playerHealth').style.width = player.health + '%';
   }
 

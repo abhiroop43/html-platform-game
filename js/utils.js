@@ -1,3 +1,4 @@
+// detects collision between two players
 function rectangularCollision({ rectangle1, rectangle2 }) {
   return (
     rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
@@ -7,6 +8,7 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
   );
 }
 
+// logic to determine winner
 function determineWinner({ player, enemy, timerId }) {
   clearTimeout(timerId);
   let $displayText = document.querySelector('#displayText');
@@ -20,9 +22,10 @@ function determineWinner({ player, enemy, timerId }) {
   }
 }
 
-let timer = 10;
+let timer = 60; // the game will last this many seconds
 let timerId;
 
+// function to decrease the timer
 function decreaseTimer() {
   if (timer > 0) {
     timerId = setTimeout(decreaseTimer, 1000);
@@ -30,6 +33,7 @@ function decreaseTimer() {
     document.querySelector('#timer').innerHTML = timer.toString();
   }
 
+  // when the timer reaches 0, determine the winner
   if (timer === 0) {
     determineWinner({ player, enemy, timerId });
   }

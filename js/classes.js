@@ -1,5 +1,5 @@
-const ANIMATION_SLOWDOWN = 10;
-const FIGHTER_GROUND_POSITION_Y = 330;
+const ANIMATION_SLOWDOWN = 10;  // slow down the animation by this multiplier
+const FIGHTER_GROUND_POSITION_Y = 330;  // offset the fighter's position from the bottom of the canvas
 
 class Sprite {
   constructor({ position, imageSrc, scale = 1, framesMax = 1, offset = { x: 0, y: 0 } }) {
@@ -97,17 +97,6 @@ class Fighter extends Sprite {
     }
   }
 
-  // draw() {
-  //   c.fillStyle = this.color;
-  //   c.fillRect(this.position.x, this.position.y, this.width, this.height);
-
-  //   // draw attack box //
-  //   if (this.isAttacking) {
-  //     c.fillStyle = 'green';
-  //     c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-  //   }
-  // }
-
   update() {
     this.draw();
     this.animateFrames();
@@ -139,11 +128,17 @@ class Fighter extends Sprite {
   }
 
   takeHit() {
-    enemy.health -= DAMAGE;
+    this.switchSprite('takeHit');
+    this.health -= DAMAGE;
   }
 
   switchSprite(sprite) {
+    // overriding all other animations with the attack animation
     if (this.image === this.sprites.attack1.image && this.framesCurrent < this.sprites.attack1.framesMax - 1) return;
+
+    // override when the figher gets hit
+    if (this.image === this.sprites.takeHit.image && this.framesCurrent < this.sprites.takeHit.framesMax - 1) return;
+
     switch (sprite) {
       case 'idle':
         if (this.image !== this.sprites.idle.image) {
