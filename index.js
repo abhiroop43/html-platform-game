@@ -285,6 +285,17 @@ function animate() {
 
 animate();
 
+document.querySelector('#beginButton').addEventListener('click', () => {
+  document.querySelector('#beginButton').style.display = 'none';
+  document.querySelector('#tutorial').style.display = 'flex';
+});
+
+document.querySelector('#startButton').addEventListener('click', () => {
+  decreaseTimer();
+  document.querySelector('#tutorial').style.display = 'none';
+  game.started = true;
+});
+
 window.addEventListener('keydown', (event) => {
   // if player is not dead then allow movement //
   if (!player.dead) {
